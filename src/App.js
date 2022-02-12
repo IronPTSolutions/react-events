@@ -1,9 +1,10 @@
-import EventItem from "./components/events/event-item/event-item";
+import EventsList from "./components/events/events-list/events-list";
 
 function App() {
+
   return (
     <div className="container py-5">
-      <EventItem />
+      <EventsList />
     </div>
   );
 }
