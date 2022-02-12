@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import moment from 'moment';
 import faker from 'faker';
 import EventItem from '../event-item/event-item';
 import events from '../../../data/events';
@@ -21,11 +22,12 @@ class EventsList extends Component {
 
   handleCreateRandomEvent() {
     this.setState((state, props) => {
+      const id = faker.random.uuid()
       const event = {
-        id: faker.random.uuid(),
+        id,
         title: faker.hacker.phrase(),
-        image: 'https://picsum.photos/seed/picsum/600/300',
-        eventDt: faker.date.between(new Date(), new Date(365 * 24 * 3600 * 1000))
+        image: `https://loremflickr.com/600/300?lock=${id}`,
+        eventDt: faker.date.between(moment(), moment().add(1, 'Y'))
       }
       return {
         events: [...state.events, event]
@@ -40,9 +42,9 @@ class EventsList extends Component {
         <div className="d-flex justify-content-center mb-3">
           <button className='btn btn-primary' onClick={() => this.handleCreateRandomEvent()}>Add Random Event</button>
         </div>
-        <div className="row row-cols-1 row-cols-md-3">
+        <div className="row g-2 row-cols-1 row-cols-md-3">
           {events.map((event) => (
-            <div key={event.id} className="col mb-2">
+            <div key={event.id} className="col">
               <EventItem {...event} onDeleteEvent={(id) => this.handleDeleteEvent(id)}/>
             </div>
           ))} 
