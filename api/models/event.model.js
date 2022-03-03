@@ -16,7 +16,15 @@ const eventSchema = new Schema({
     required: 'Event date time is required'
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  toJSON: {
+    transform: (doc, event) => {
+      event.id = doc._id;
+      delete event.__v;
+      delete event._id;
+      return event;
+    }
+  }
 });
 
 const Event = mongoose.model('Event', eventSchema);
