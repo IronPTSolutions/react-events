@@ -36,3 +36,15 @@ module.exports.delete = (req, res, next) => {
     })
     .catch(error => next(error));
 }
+
+module.exports.edit = (req, res, next) => {
+  Event.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+    .then(event => {
+      if (!event) {
+        next(createError(404, `Event ${req.params.id} not found`));
+      } else {
+        res.json(event);
+      }
+    })
+    .catch(error => next(error));
+}
