@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const creatError = require('http-errors');
+const createError = require('http-errors');
 
 /* Configs */
 require('./config/db.config');
@@ -18,8 +18,10 @@ const routes = require('./config/routes.config');
 app.use('/api', routes);
 
 app.use((error, req, res, next) => {
-  if (error instanceof mongoose.Error.ValidationError) {
-    error = creatError(400, error);
+  if (error instanceof mongoose.Error.CastError && error.message.includes('ObjectId')) {
+    error = createError(404, 'Resource not found');
+  } else if (error instanceof mongoose.Error.ValidationError) {
+    error = createError(400, error);
   } else if (!error.status) {
     error = createError(500, error);
   }
