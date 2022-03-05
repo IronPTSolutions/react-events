@@ -10,8 +10,12 @@ require('./config/db.config');
 
 const app = express();
 
+/** Middlewares */
+
 app.use(express.json());
 app.use(logger('dev'));
+const { session } = require('./config/session.config');
+app.use(session);
 
 
 const routes = require('./config/routes.config');
