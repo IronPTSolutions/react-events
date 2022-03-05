@@ -8,7 +8,9 @@ module.exports.list = (req, res, next) => {
 }
 
 module.exports.create = (req, res, next) => {
-  Event.create(req.body)
+  const event = req.body;
+  event.ownerId = req.user.id;
+  Event.create(event)
     .then(event => res.status(201).json(event))
     .catch(error => next(error));
 }
@@ -26,15 +28,18 @@ module.exports.detail = (req, res, next) => {
 }
 
 module.exports.delete = (req, res, next) => {
-  Event.findByIdAndDelete(req.params.id)
+  Event.findById(req.params.id)
     .then(event => {
       if (!event) {
         next(createError(404, `Event ${req.params.id} not found`))
+      } else if (event.ownerId != req.user.id) {
+        next(createError(403, `Event ${req.params.id} not owned by you`))
       } else {
-        res.status(204).send();
+        return Event.deleteOne({ _id: event.id })
+          .then(() => res.status(204).send())
       }
     })
-    .catch(error => next(error));
+    .catch(error => next(error))
 }
 
 module.exports.edit = (req, res, next) => {

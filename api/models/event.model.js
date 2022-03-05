@@ -14,6 +14,10 @@ const eventSchema = new Schema({
   eventDt: {
     type: Date,
     required: 'Event date time is required'
+  },
+  ownerId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'User'
   }
 }, {
   timestamps: true,
