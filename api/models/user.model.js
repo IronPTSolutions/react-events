@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 
 const EMAIL_REGEX = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 const PASSWORD_REGEX = /.{8,}/;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 const userSchema = new Schema({
   name: {
@@ -24,6 +25,11 @@ const userSchema = new Schema({
     type: String,
     required: 'User password is required',
     match: [PASSWORD_REGEX, 'Password needs at least 8 chars']
+  },
+  role: {
+    type: String,
+    enum: ['admin', 'guess'],
+    default: 'guess'
   }
 }, { 
   timestamps: true,
@@ -42,6 +48,10 @@ const userSchema = new Schema({
 
 userSchema.pre('save', function (next) {
 
+  if (this.email === ADMIN_EMAIL) {
+    this.role = 'admin';
+  }
+
   if (this.isModified('password')) {
     bcrypt.hash(this.password, SALT_WORK_FACTOR)
       .then(hash => {
@@ -55,6 +65,10 @@ userSchema.pre('save', function (next) {
 
 userSchema.methods.checkPassword = function (passwordToCheck) {
   return bcrypt.compare(passwordToCheck, this.password);
+}
+
+userSchema.methods.isAdmin = function () {
+  return this.role === 'admin';
 }
 
 const User = mongoose.model('User', userSchema);

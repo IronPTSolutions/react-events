@@ -32,7 +32,7 @@ module.exports.delete = (req, res, next) => {
     .then(event => {
       if (!event) {
         next(createError(404, `Event ${req.params.id} not found`))
-      } else if (event.ownerId != req.user.id) {
+      } else if (event.ownerId != req.user.id && !req.user.isAdmin()) {
         next(createError(403, `Event ${req.params.id} not owned by you`))
       } else {
         return Event.deleteOne({ _id: event.id })
@@ -47,7 +47,7 @@ module.exports.edit = (req, res, next) => {
     .then(event => {
       if (!event) {
         next(createError(404, `Event ${req.params.id} not found`))
-      } else if (event.ownerId != req.user.id) {
+      } else if (event.ownerId != req.user.id && !req.user.isAdmin()) {
         next(createError(403, `Event ${req.params.id} not owned by you`))
       } else {
         delete req.body.ownerId;
