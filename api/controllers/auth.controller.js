@@ -48,6 +48,10 @@ module.exports.login = (req, res, next) => {
     .catch(error => next(error));
 }
 
+module.exports.profile = (req, res, next) => {
+  res.json(req.user);
+}
+
 module.exports.logout = (req, res, next) => {
   req.session.destroy();
   req.session = null;

@@ -43,13 +43,19 @@ module.exports.delete = (req, res, next) => {
 }
 
 module.exports.edit = (req, res, next) => {
-  Event.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+  Event.findById(req.params.id)
     .then(event => {
       if (!event) {
-        next(createError(404, `Event ${req.params.id} not found`));
+        next(createError(404, `Event ${req.params.id} not found`))
+      } else if (event.ownerId != req.user.id) {
+        next(createError(403, `Event ${req.params.id} not owned by you`))
       } else {
-        res.json(event);
+        delete req.body.ownerId;
+        Object.assign(event, req.body); 
+        return event.save()
+          .then(event => res.json(event));
       }
     })
     .catch(error => next(error));
 }
+
