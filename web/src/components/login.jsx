@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate, Navigate } from "react-router";
+import { Link } from "react-router-dom";
+import { AlertContext } from "../contexts/alert-context";
 import { AuthContext } from "../contexts/auth-context";
 import { login } from "../services/api-service";
 
@@ -20,11 +22,14 @@ function Login() {
     });
   }
 
+  const { showAlert } = React.useContext(AlertContext);
+
   function handleSubmit(e) {
     e.preventDefault(e);
 
     login(data)
       .then((response) => {
+        showAlert(`welcome ${response.data.name}!`);
         handleLogin(response.data);
         navigate("/");
       })
@@ -65,6 +70,10 @@ function Login() {
           value={data.password}
           onChange={handleChange}
         />
+      </div>
+
+      <div className="mb-3">
+        <Link to="/register">Register</Link>
       </div>
 
       <button type="submit" class="btn btn-primary">

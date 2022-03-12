@@ -7,7 +7,7 @@ function EventList() {
 
   React.useEffect(() => {
     getEvents().then((response) => {
-      setEvents(response.data);
+      setEvents(response.data.reverse());
     });
   }, []);
 

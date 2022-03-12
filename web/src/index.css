@@ -1,0 +1,8 @@
+.EventNew {
+  background: rgb(0 0 0 / 70%);
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  padding-top: 100px;
+}

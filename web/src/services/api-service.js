@@ -38,3 +38,7 @@ export function createEvent(event) {
 export function login(user) {
   return http.post("/api/login", user);
 }
+
+export function register(user) {
+  return http.post("/api/register", user);
+}
